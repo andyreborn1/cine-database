@@ -17,10 +17,10 @@ import static springfox.documentation.builders.RequestHandlerSelectors.basePacka
 @EnableSwagger2
 public class SwaggerConfig {
 
-    private static final String BASE_PACKAGE = "odev.nemowave.cinedatabase.controller";
+    private static final String BASE_PACKAGE = "dev.nemowave.cinedatabase.controller";
     private static final String API_TITLE = "Movie API";
     private static final String API_DESCRIPTION = "REST API for management of movies";
-    private static final String CONTACT_NAME = "ANderson Ribeiro";
+    private static final String CONTACT_NAME = "Anderson Ribeiro";
     private static final String CONTACT_GITHUB = "https://gtihub.com/andyreborn1";
     private static final String CONTACT_EMAIL = "andyreborn@hotmail.com.br";
 

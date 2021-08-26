@@ -35,7 +35,7 @@ public class MovieService {
     }
 
     public MovieDTO findByName(String name) throws MovieNotFoundException {
-        Movie foundMovie = movieRepository.findByName(name)
+        Movie foundMovie = movieRepository.findByTitle(name)
                 .orElseThrow(() -> new MovieNotFoundException(name));
         return movieMapper.toDTO(foundMovie);
     }
@@ -52,7 +52,7 @@ public class MovieService {
     }
 
     private void verifyIfAlreadRegistered(String name) throws DataAlreadyRegisteredException {
-        Optional<Movie> optSavedMovie = movieRepository.findByName(name);
+        Optional<Movie> optSavedMovie = movieRepository.findByTitle(name);
         if (optSavedMovie.isPresent()) {
             throw new DataAlreadyRegisteredException(name);
         }
