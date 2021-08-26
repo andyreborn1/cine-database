@@ -24,21 +24,27 @@ public class Movie {
 
     private String originalTitle;
 
+    private String synopsis;
+
     private String imageLink;
 
     private String trailerLink;
 
     private long year;
 
+    @Column(nullable = false)
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Writer> writer;
 
+    @Column(nullable = false)
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Director> director;
 
+    @Column(nullable = false)
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Star> star;
 
+    @Column(nullable = false)
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Genre> genre;
 

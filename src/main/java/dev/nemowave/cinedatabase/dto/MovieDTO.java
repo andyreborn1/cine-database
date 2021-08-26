@@ -26,6 +26,8 @@ public class MovieDTO {
 
     private String originalTitle;
 
+    private String synopsis;
+
     private String imageLink;
 
     private String trailerLink;
@@ -33,15 +35,19 @@ public class MovieDTO {
     private long year;
 
     @Valid
+    @NotEmpty
     private List<Writer> writer;
 
     @Valid
+    @NotEmpty
     private List<Director> director;
 
     @Valid
+    @NotEmpty
     private List<Star> star;
 
     @Valid
+    @NotEmpty
     private List<Genre> genre;
 
     private String country;
