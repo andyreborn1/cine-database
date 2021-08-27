@@ -4,7 +4,6 @@ import dev.nemowave.cinedatabase.dto.GenreDTO;
 import dev.nemowave.cinedatabase.exception.DataAlreadyRegisteredException;
 import dev.nemowave.cinedatabase.exception.RegisterNotFoundException;
 import dev.nemowave.cinedatabase.service.GenreService;
-import jdk.dynalink.linker.LinkerServices;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +20,7 @@ public class GenreController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public GenreDTO create(GenreDTO genreDTO) throws DataAlreadyRegisteredException {
+    public GenreDTO create(@RequestBody GenreDTO genreDTO) throws DataAlreadyRegisteredException {
         return genreService.create(genreDTO);
     }
 
