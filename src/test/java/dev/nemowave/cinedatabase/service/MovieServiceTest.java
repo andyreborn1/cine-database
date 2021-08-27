@@ -13,11 +13,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
@@ -78,7 +79,7 @@ public class MovieServiceTest {
     }
 
     @Test
-    void whenNoRegisteredMovieNameRegisteredThenThrownAnException() throws RegisterNotFoundException {
+    void whenNoRegisteredMovieNameIsGivendThenThrownAnException() throws RegisterNotFoundException {
         //given
         MovieDTO expectedMovieDTO = MovieDTOBuilder.builder().build().toMovieDTO();
 
@@ -90,6 +91,30 @@ public class MovieServiceTest {
         assertThrows(RegisterNotFoundException.class, () -> movieService.findByName(expectedMovieDTO.getTitle()));
     }
 
+    @Test
+    void whenListMovieIsCalledThenReturnAListOfMovies() {
+        //given
+        MovieDTO expectedMovieDTO = MovieDTOBuilder.builder().build().toMovieDTO();
+        Movie expectedFoundMovie = movieMapper.toModel(expectedMovieDTO);
 
+        //when
+        when(movieRepository.findAll()).thenReturn(Collections.singletonList(expectedFoundMovie));
 
+        //then
+        List<Movie> foundMovieDTO = movieRepository.findAll();
+
+        assertThat(foundMovieDTO, is(not(empty())));
+        assertThat(foundMovieDTO.get(0), is(equalTo(expectedFoundMovie)));
+    }
+
+    @Test
+    void whenListMovieIsCalledThenReturnAnEmptyList() {
+        //when
+        when(movieRepository.findAll()).thenReturn(Collections.EMPTY_LIST);
+
+        //then
+        List<Movie> foundMovieDTO = movieRepository.findAll();
+
+        assertThat(foundMovieDTO, is(empty()));
+    }
 }
