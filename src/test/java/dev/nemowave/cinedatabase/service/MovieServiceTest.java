@@ -6,6 +6,9 @@ import dev.nemowave.cinedatabase.dto.mapper.MovieMapper;
 import dev.nemowave.cinedatabase.exception.DataAlreadyRegisteredException;
 import dev.nemowave.cinedatabase.model.Movie;
 import dev.nemowave.cinedatabase.repository.MovieRepository;
+import org.hamcrest.Matcher;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,6 +18,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
@@ -33,17 +38,17 @@ public class MovieServiceTest {
     void whenMovieInformedThenShouldBeCreated() throws DataAlreadyRegisteredException {
 
         //given
-        MovieDTO movieDTO = MovieDTOBuilder.builder().build().toMovieDTO();
-        Movie expectedSavedMovie = movieMapper.toModel(movieDTO);
+        MovieDTO expectedMovieDTO = MovieDTOBuilder.builder().build().toMovieDTO();
+        Movie expectedSavedMovie = movieMapper.toModel(expectedMovieDTO);
 
         //when
-        when(movieRepository.findByTitle(movieDTO.getTitle())).thenReturn(Optional.empty());
+        when(movieRepository.findByTitle(expectedMovieDTO.getTitle())).thenReturn(Optional.empty());
         when(movieRepository.save(expectedSavedMovie)).thenReturn(expectedSavedMovie);
 
         //then
-        MovieDTO createdMovieDTO = movieService.create(movieDTO);
+        MovieDTO createdMovieDTO = movieService.create(expectedMovieDTO);
 
-        assertEquals(movieDTO.getId(),createdMovieDTO.getId());
-        assertEquals(movieDTO.getTitle(), createdMovieDTO.getTitle());
+        assertThat(createdMovieDTO.getId(), is(equalTo(expectedMovieDTO.getId())));
+        assertThat(createdMovieDTO.getTitle(), is(equalTo(expectedMovieDTO.getTitle())));
     }
 }
