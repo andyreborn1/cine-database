@@ -3,7 +3,7 @@ package dev.nemowave.cinedatabase.service;
 import dev.nemowave.cinedatabase.dto.MovieDTO;
 import dev.nemowave.cinedatabase.dto.mapper.MovieMapper;
 import dev.nemowave.cinedatabase.exception.DataAlreadyRegisteredException;
-import dev.nemowave.cinedatabase.exception.MovieNotFoundException;
+import dev.nemowave.cinedatabase.exception.RegisterNotFoundException;
 import dev.nemowave.cinedatabase.model.Movie;
 import dev.nemowave.cinedatabase.repository.MovieRepository;
 import lombok.AllArgsConstructor;
@@ -29,14 +29,14 @@ public class MovieService {
         return movieMapper.toDTO(savedMovie);
     }
 
-    public MovieDTO findById(long id) throws MovieNotFoundException {
+    public MovieDTO findById(long id) throws RegisterNotFoundException {
         Movie movie = verifyIfExistisById(id);
         return movieMapper.toDTO(movie);
     }
 
-    public MovieDTO findByName(String name) throws MovieNotFoundException {
+    public MovieDTO findByName(String name) throws RegisterNotFoundException {
         Movie foundMovie = movieRepository.findByTitle(name)
-                .orElseThrow(() -> new MovieNotFoundException(name));
+                .orElseThrow(() -> new RegisterNotFoundException(name));
         return movieMapper.toDTO(foundMovie);
     }
 
@@ -46,7 +46,7 @@ public class MovieService {
                 .collect(Collectors.toList());
     }
 
-    public void deleteById(long id) throws MovieNotFoundException {
+    public void deleteById(long id) throws RegisterNotFoundException {
         Movie movieToDelete = verifyIfExistisById(id);
         movieRepository.deleteById(id);
     }
@@ -59,8 +59,8 @@ public class MovieService {
     }
 
 
-    private Movie verifyIfExistisById(long id) throws MovieNotFoundException {
+    private Movie verifyIfExistisById(long id) throws RegisterNotFoundException {
         return movieRepository.findById(id)
-                .orElseThrow(() -> new MovieNotFoundException(id));
+                .orElseThrow(() -> new RegisterNotFoundException(id));
     }
 }

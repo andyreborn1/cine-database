@@ -2,7 +2,7 @@ package dev.nemowave.cinedatabase.controller;
 
 import dev.nemowave.cinedatabase.dto.MovieDTO;
 import dev.nemowave.cinedatabase.exception.DataAlreadyRegisteredException;
-import dev.nemowave.cinedatabase.exception.MovieNotFoundException;
+import dev.nemowave.cinedatabase.exception.RegisterNotFoundException;
 import dev.nemowave.cinedatabase.service.MovieService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +25,8 @@ public class MovieController {
         return movieService.create(movieDTO);
     }
 
-    @GetMapping("/{id}")
-    public MovieDTO findById(@PathVariable long id) throws MovieNotFoundException {
-        return movieService.findById(id);
-    }
-
     @GetMapping("/{name}")
-    public MovieDTO findByName(@PathVariable String name) throws MovieNotFoundException {
+    public MovieDTO findByName(@PathVariable String name) throws RegisterNotFoundException {
         return movieService.findByName(name);
     }
 
@@ -42,7 +37,7 @@ public class MovieController {
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteById(@PathVariable long id) throws MovieNotFoundException {
+    public void deleteById(@PathVariable long id) throws RegisterNotFoundException {
         movieService.deleteById(id);
     }
 }

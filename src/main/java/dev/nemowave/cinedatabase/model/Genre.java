@@ -1,6 +1,5 @@
 package dev.nemowave.cinedatabase.model;
 
-import dev.nemowave.cinedatabase.enums.GenreType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,7 +18,6 @@ public class Genre {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private GenreType type;
+    private String name;
 }
