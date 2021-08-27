@@ -4,12 +4,9 @@ import dev.nemowave.cinedatabase.builder.MovieDTOBuilder;
 import dev.nemowave.cinedatabase.dto.MovieDTO;
 import dev.nemowave.cinedatabase.dto.mapper.MovieMapper;
 import dev.nemowave.cinedatabase.exception.DataAlreadyRegisteredException;
+import dev.nemowave.cinedatabase.exception.RegisterNotFoundException;
 import dev.nemowave.cinedatabase.model.Movie;
 import dev.nemowave.cinedatabase.repository.MovieRepository;
-import org.hamcrest.Matcher;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,9 +15,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -53,7 +51,7 @@ public class MovieServiceTest {
     }
 
     @Test
-    void whenAlreadRegisteredMovieInformedShoulThrownException(){
+    void whenAlreadRegisteredMovieInformedShoulThrownException() {
         //given
         MovieDTO expectedMovieDTO = MovieDTOBuilder.builder().build().toMovieDTO();
         Movie registeredMovie = movieMapper.toModel(expectedMovieDTO);
@@ -61,6 +59,37 @@ public class MovieServiceTest {
         //when
         when(movieRepository.findByTitle(expectedMovieDTO.getTitle())).thenReturn(Optional.of(registeredMovie));
 
-        assertThrows(DataAlreadyRegisteredException.class, ()->movieService.create(expectedMovieDTO));
+        assertThrows(DataAlreadyRegisteredException.class, () -> movieService.create(expectedMovieDTO));
     }
+
+    @Test
+    void whenAValidMovieNameIsGivenThenReturnAMovie() throws RegisterNotFoundException {
+        //given
+        MovieDTO expectedMovieDTO = MovieDTOBuilder.builder().build().toMovieDTO();
+        Movie expectedFoundMovie = movieMapper.toModel(expectedMovieDTO);
+
+        //when
+        when(movieRepository.findByTitle(expectedMovieDTO.getTitle())).thenReturn(Optional.of(expectedFoundMovie));
+
+        //then
+        MovieDTO foundMovieDTO = movieService.findByName(expectedMovieDTO.getTitle());
+
+        assertThat(foundMovieDTO, is(equalTo(expectedMovieDTO)));
+    }
+
+    @Test
+    void whenNoRegisteredMovieNameRegisteredThenThrownAnException() throws RegisterNotFoundException {
+        //given
+        MovieDTO expectedMovieDTO = MovieDTOBuilder.builder().build().toMovieDTO();
+
+        //when
+        when(movieRepository.findByTitle(expectedMovieDTO.getTitle())).thenReturn(Optional.empty());
+
+        //then
+
+        assertThrows(RegisterNotFoundException.class, () -> movieService.findByName(expectedMovieDTO.getTitle()));
+    }
+
+
+
 }

@@ -3,6 +3,7 @@ package dev.nemowave.cinedatabase.controller;
 import dev.nemowave.cinedatabase.builder.MovieDTOBuilder;
 import dev.nemowave.cinedatabase.dto.MovieDTO;
 import dev.nemowave.cinedatabase.exception.DataAlreadyRegisteredException;
+import dev.nemowave.cinedatabase.exception.RegisterNotFoundException;
 import dev.nemowave.cinedatabase.service.MovieService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 import static dev.nemowave.cinedatabase.utils.JsonConversionUtils.asJsonString;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -50,7 +52,6 @@ public class MovieControllerTest {
     void whenPOSTItsCalledThenAMovieIsCreated() throws Exception {
         //given
         MovieDTO movieDTO = MovieDTOBuilder.builder().build().toMovieDTO();
-
         //when
         when(movieService.create(movieDTO)).thenReturn(movieDTO);
 
@@ -78,4 +79,37 @@ public class MovieControllerTest {
                 .andExpect(status().isBadRequest())
         ;
     }
+
+    @Test
+    void whenGETAMovieWithAValidTitleItsCalledThenAMovieIsReturned() throws Exception {
+        //given
+        MovieDTO movieDTO = MovieDTOBuilder.builder().build().toMovieDTO();
+        //when
+        when(movieService.findByName(movieDTO.getTitle())).thenReturn(movieDTO);
+
+        //then
+        mockMvc.perform(get(MOVIE_API_URL_PATH+"/"+movieDTO.getTitle())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(movieDTO)))
+
+                .andExpect(jsonPath("$.title", is(movieDTO.getTitle())))
+        ;
+    }
+
+    @Test
+    void whenGETAMovieThatsNotRegisteredThenThrownAnError() throws Exception {
+        //given
+        MovieDTO movieDTO = MovieDTOBuilder.builder().build().toMovieDTO();
+
+        //when
+        when(movieService.findByName(movieDTO.getTitle())).thenThrow(new RegisterNotFoundException(movieDTO.getTitle()));
+
+        //then
+        mockMvc.perform(get(MOVIE_API_URL_PATH+"/"+movieDTO.getTitle())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(movieDTO)))
+                .andExpect(status().isNotFound())
+        ;
+    }
+
 }
