@@ -51,4 +51,16 @@ public class MovieServiceTest {
         assertThat(createdMovieDTO.getId(), is(equalTo(expectedMovieDTO.getId())));
         assertThat(createdMovieDTO.getTitle(), is(equalTo(expectedMovieDTO.getTitle())));
     }
+
+    @Test
+    void whenAlreadRegisteredMovieInformedShoulThrownException(){
+        //given
+        MovieDTO expectedMovieDTO = MovieDTOBuilder.builder().build().toMovieDTO();
+        Movie registeredMovie = movieMapper.toModel(expectedMovieDTO);
+
+        //when
+        when(movieRepository.findByTitle(expectedMovieDTO.getTitle())).thenReturn(Optional.of(registeredMovie));
+
+        assertThrows(DataAlreadyRegisteredException.class, ()->movieService.create(expectedMovieDTO));
+    }
 }
