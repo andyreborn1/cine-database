@@ -20,7 +20,7 @@ import java.util.Optional;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class MovieServiceTest {
@@ -28,7 +28,7 @@ public class MovieServiceTest {
     @Mock
     private MovieRepository movieRepository;
 
-    private MovieMapper movieMapper = MovieMapper.INSTANCE;
+    private final MovieMapper movieMapper = MovieMapper.INSTANCE;
 
     @InjectMocks
     private MovieService movieService;
@@ -79,7 +79,7 @@ public class MovieServiceTest {
     }
 
     @Test
-    void whenNoRegisteredMovieNameIsGivendThenThrownAnException() throws RegisterNotFoundException {
+    void whenNoRegisteredMovieNameIsGivendThenThrownAnException() {
         //given
         MovieDTO expectedMovieDTO = MovieDTOBuilder.builder().build().toMovieDTO();
 
@@ -116,5 +116,35 @@ public class MovieServiceTest {
         List<Movie> foundMovieDTO = movieRepository.findAll();
 
         assertThat(foundMovieDTO, is(empty()));
+    }
+
+    @Test
+    void whenExclusionWithAValidIdIsCalledThenAMovieShouldBeRemoved() throws RegisterNotFoundException {
+        //given
+        MovieDTO expectedMovieDTO = MovieDTOBuilder.builder().build().toMovieDTO();
+        Movie expectedFoundMovie = movieMapper.toModel(expectedMovieDTO);
+
+        //when
+        when(movieRepository.findById(expectedMovieDTO.getId())).thenReturn(Optional.of(expectedFoundMovie));
+        doNothing().when(movieRepository).deleteById(expectedMovieDTO.getId());
+
+        //then
+        movieService.deleteById(expectedMovieDTO.getId());
+
+        verify(movieRepository, times(1)).findById(expectedMovieDTO.getId());
+        verify(movieRepository, times(1)).deleteById(expectedMovieDTO.getId());
+    }
+
+    @Test
+    void whenExclusionWithoutAValidIdIsCalledThenAErrorShouldBeThrown() throws RegisterNotFoundException {
+        //given
+        MovieDTO expectedMovieDTO = MovieDTOBuilder.builder().build().toMovieDTO();
+        Movie expectedFoundMovie = movieMapper.toModel(expectedMovieDTO);
+
+        //when
+        when(movieRepository.findById(expectedMovieDTO.getId())).thenReturn(Optional.empty());
+
+        //then
+        assertThrows(RegisterNotFoundException.class, () -> movieService.deleteById(expectedFoundMovie.getId()));
     }
 }

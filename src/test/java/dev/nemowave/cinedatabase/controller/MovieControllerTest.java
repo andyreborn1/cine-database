@@ -21,9 +21,8 @@ import java.util.Collections;
 
 import static dev.nemowave.cinedatabase.utils.JsonConversionUtils.asJsonString;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -63,8 +62,6 @@ public class MovieControllerTest {
                 .content(asJsonString(movieDTO)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.title", is(movieDTO.getTitle())))
-                .andExpect(jsonPath("$.id", is(movieDTO.getId())))
-                .andExpect(jsonPath("$.year", is(movieDTO.getYear())))
                 ;
     }
 
@@ -124,10 +121,35 @@ public class MovieControllerTest {
 
         //then
         mockMvc.perform(get(MOVIE_API_URL_PATH)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(movieDTO)))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
         ;
     }
 
+    @Test
+    void whenDeleteARegisteredMovieThenReturnStatusCodeNoContent() throws Exception {
+        //given
+        MovieDTO movieDTO = MovieDTOBuilder.builder().build().toMovieDTO();
+        //when
+        doNothing().when(movieService).deleteById(movieDTO.getId());
+
+        //then
+        mockMvc.perform(delete(MOVIE_API_URL_PATH+"/"+movieDTO.getId())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent())
+        ;
+    }
+
+    @Test
+    void whenDeleteANoRegisteredMovieThenReturnStatusCodeNotFound() throws Exception {
+
+        //when
+        doThrow(RegisterNotFoundException.class).when(movieService).deleteById(INVALID_MOVIE_ID);
+
+        //then
+        mockMvc.perform(delete(MOVIE_API_URL_PATH+"/"+INVALID_MOVIE_ID)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+        ;
+    }
 }
