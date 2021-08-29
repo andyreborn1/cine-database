@@ -1,12 +1,14 @@
 package dev.nemowave.cinedatabase.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Data
@@ -30,24 +32,21 @@ public class Movie {
 
     private String trailerLink;
 
+    private String country;
+
     private long year;
 
-    @Column(nullable = true)
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private List<Writer> writer;
+    private Set<Writer> writer;
 
-    @Column(nullable = true)
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private List<Director> director;
+    private Set<Director> director;
 
-    @Column(nullable = true)
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private List<Star> star;
+    private Set<Star> star;
 
-    @Column(nullable = true)
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private List<Genre> genre;
-
-    private String country;
+    @ManyToMany(cascade = {CascadeType.MERGE})
+    @JsonIgnore
+    private Set<Genre> genre;
 
 }

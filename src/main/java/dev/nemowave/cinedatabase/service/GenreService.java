@@ -2,6 +2,7 @@ package dev.nemowave.cinedatabase.service;
 
 import dev.nemowave.cinedatabase.dto.GenreDTO;
 import dev.nemowave.cinedatabase.dto.mapper.GenreMapper;
+import dev.nemowave.cinedatabase.dto.mapper.MovieMapper;
 import dev.nemowave.cinedatabase.exception.DataAlreadyRegisteredException;
 import dev.nemowave.cinedatabase.exception.RegisterNotFoundException;
 import dev.nemowave.cinedatabase.model.Genre;
@@ -20,6 +21,7 @@ public class GenreService {
 
     GenreRepository genreRepository;
     private final GenreMapper genreMapper = GenreMapper.INSTANCE;
+    private final MovieMapper movieMapper = MovieMapper.INSTANCE;
 
     public GenreDTO create(GenreDTO genreDTO) throws DataAlreadyRegisteredException {
         verifyIfALreadRegistered(genreDTO.getName());
@@ -40,7 +42,7 @@ public class GenreService {
         return genreMapper.toDTO(find);
     }
 
-    public void verifyIfALreadRegistered(String name) throws DataAlreadyRegisteredException {
+    private void verifyIfALreadRegistered(String name) throws DataAlreadyRegisteredException {
         Optional<Genre> getSavedGenre = genreRepository.findByName(name);
 
         if (getSavedGenre.isPresent()) {

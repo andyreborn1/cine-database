@@ -3,6 +3,7 @@ package dev.nemowave.cinedatabase.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Data
@@ -15,6 +16,9 @@ public class Star {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
+
+    @ManyToMany
+    private Set<Movie> movieSet;
 }

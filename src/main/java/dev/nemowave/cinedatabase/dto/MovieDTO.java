@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
-import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -32,19 +32,21 @@ public class MovieDTO {
 
     private String trailerLink;
 
+    private String country;
+
     private long year;
 
     @Valid
-    private List<Writer> writer;
+    private Set<Writer> writer;
 
     @Valid
-    private List<Director> director;
+    private Set<Director> director;
 
     @Valid
-    private List<Star> star;
+    private Set<Star> star;
 
     @Valid
-    private List<Genre> genre;
+    private Set<Genre> genre;
 
-    private String country;
+
 }
