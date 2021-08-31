@@ -1,5 +1,6 @@
 package dev.nemowave.cinedatabase.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,6 +23,7 @@ public class Director {
     @Column(nullable = false)
     private String name;
 
-    @ManyToMany
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "director", cascade = {CascadeType.MERGE})
     private Set<Movie> movieSet;
 }

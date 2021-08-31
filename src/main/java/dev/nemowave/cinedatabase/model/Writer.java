@@ -1,5 +1,6 @@
 package dev.nemowave.cinedatabase.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,6 +23,7 @@ public class Writer {
     @Column(nullable = false)
     private String name;
 
-    @ManyToMany
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "writer", cascade = {CascadeType.MERGE})
     private Set<Movie> movieSet;
 }

@@ -36,13 +36,16 @@ public class Movie {
 
     private long year;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(cascade = {CascadeType.MERGE})
+    @JsonIgnore
     private Set<Writer> writer;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(cascade = {CascadeType.MERGE})
+    @JsonIgnore
     private Set<Director> director;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(cascade = {CascadeType.MERGE})
+    @JsonIgnore
     private Set<Star> star;
 
     @ManyToMany(cascade = {CascadeType.MERGE})

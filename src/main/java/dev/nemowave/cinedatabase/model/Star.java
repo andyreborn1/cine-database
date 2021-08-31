@@ -1,5 +1,6 @@
 package dev.nemowave.cinedatabase.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -19,6 +20,7 @@ public class Star {
     @Column(nullable = false)
     private String name;
 
-    @ManyToMany
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "star", cascade = {CascadeType.MERGE})
     private Set<Movie> movieSet;
 }
