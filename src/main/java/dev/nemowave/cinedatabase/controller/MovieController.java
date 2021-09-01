@@ -31,13 +31,19 @@ public class MovieController {
     }
 
     @GetMapping
-    public List<MovieDTO> findAll(){
-        return  movieService.findAll();
+    public List<MovieDTO> findAll() {
+        return movieService.findAll();
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteById(@PathVariable long id) throws RegisterNotFoundException {
         movieService.deleteById(id);
+    }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public MovieDTO update(@PathVariable long id, @RequestBody @Valid MovieDTO movieDTO) throws RegisterNotFoundException {
+        return movieService.update(id, movieDTO);
     }
 }

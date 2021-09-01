@@ -29,8 +29,5 @@ public class GenreController {
         return genreService.findaAll();
     }
 
-    @GetMapping("/{id}")
-    public GenreDTO findAll(@PathVariable long id) throws RegisterNotFoundException {
-        return genreService.findaById(id);
-    }
+
 }
