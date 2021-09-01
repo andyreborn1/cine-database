@@ -2,7 +2,6 @@ package dev.nemowave.cinedatabase.controller;
 
 import dev.nemowave.cinedatabase.dto.GenreDTO;
 import dev.nemowave.cinedatabase.exception.DataAlreadyRegisteredException;
-import dev.nemowave.cinedatabase.exception.RegisterNotFoundException;
 import dev.nemowave.cinedatabase.service.GenreService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +24,7 @@ public class GenreController {
     }
 
     @GetMapping
-    public List<GenreDTO> findAll(){
+    public List<GenreDTO> findAll() {
         return genreService.findaAll();
     }
-
-
 }
