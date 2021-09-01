@@ -4,9 +4,7 @@ import dev.nemowave.cinedatabase.dto.MovieDTO;
 import dev.nemowave.cinedatabase.dto.mapper.MovieMapper;
 import dev.nemowave.cinedatabase.exception.DataAlreadyRegisteredException;
 import dev.nemowave.cinedatabase.exception.RegisterNotFoundException;
-import dev.nemowave.cinedatabase.model.Genre;
 import dev.nemowave.cinedatabase.model.Movie;
-import dev.nemowave.cinedatabase.repository.GenreRepository;
 import dev.nemowave.cinedatabase.repository.MovieRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +20,6 @@ import java.util.stream.Collectors;
 public class MovieService {
 
     MovieRepository movieRepository;
-    GenreRepository genreRepository;
 
     private final MovieMapper movieMapper = MovieMapper.INSTANCE;
 
@@ -49,6 +46,14 @@ public class MovieService {
         return movieRepository.findAll()
                 .stream().map(movieMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    public MovieDTO update(long id, MovieDTO movieDTO) throws RegisterNotFoundException {
+        verifyIfExistisById(id);
+        Movie movieToUpdate = movieMapper.toModel(movieDTO);
+        Movie updatedMovie = movieRepository.save(movieToUpdate);
+
+        return movieMapper.toDTO(updatedMovie);
     }
 
     public void deleteById(long id) throws RegisterNotFoundException {
