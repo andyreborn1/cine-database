@@ -7,5 +7,5 @@ public class DirectorDTOBuilder {
     public long id = 1L;
 
     @Builder.Default
-    public String name = "";
+    public String name = "Stanley Kubrick";
 }

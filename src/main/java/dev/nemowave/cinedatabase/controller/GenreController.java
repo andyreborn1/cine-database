@@ -25,6 +25,6 @@ public class GenreController {
 
     @GetMapping
     public List<GenreDTO> findAll() {
-        return genreService.findaAll();
+        return genreService.findAll();
     }
 }

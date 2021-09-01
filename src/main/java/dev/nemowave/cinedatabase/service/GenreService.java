@@ -2,10 +2,10 @@ package dev.nemowave.cinedatabase.service;
 
 import dev.nemowave.cinedatabase.dto.GenreDTO;
 import dev.nemowave.cinedatabase.dto.mapper.GenreMapper;
-import dev.nemowave.cinedatabase.dto.mapper.MovieMapper;
 import dev.nemowave.cinedatabase.exception.DataAlreadyRegisteredException;
 import dev.nemowave.cinedatabase.exception.RegisterNotFoundException;
 import dev.nemowave.cinedatabase.model.Genre;
+import dev.nemowave.cinedatabase.model.Movie;
 import dev.nemowave.cinedatabase.repository.GenreRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,32 +21,34 @@ public class GenreService {
 
     GenreRepository genreRepository;
     private final GenreMapper genreMapper = GenreMapper.INSTANCE;
-    private final MovieMapper movieMapper = MovieMapper.INSTANCE;
 
     public GenreDTO create(GenreDTO genreDTO) throws DataAlreadyRegisteredException {
-        verifyIfALreadRegistered(genreDTO.getName());
+        verifyIfAlreadRegistered(genreDTO.getName());
         Genre genreToSave = genreMapper.toModel(genreDTO);
         Genre savedGenre = genreRepository.save(genreToSave);
         return genreMapper.toDTO(savedGenre);
     }
 
-    public List<GenreDTO> findaAll() {
+    public List<GenreDTO> findAll() {
         return genreRepository.findAll()
                 .stream().map(genreMapper::toDTO).collect(Collectors.toList());
     }
 
-    public GenreDTO findaById(long id) throws RegisterNotFoundException {
-        Genre find = genreRepository.findById(id)
-                .orElseThrow(() -> new RegisterNotFoundException(id));
-
-        return genreMapper.toDTO(find);
+    public void delete(long id) throws RegisterNotFoundException {
+        verifyIfExistisById(id);
+        genreRepository.deleteById(id);
     }
 
-    private void verifyIfALreadRegistered(String name) throws DataAlreadyRegisteredException {
+    private void verifyIfAlreadRegistered(String name) throws DataAlreadyRegisteredException {
         Optional<Genre> getSavedGenre = genreRepository.findByName(name);
 
         if (getSavedGenre.isPresent()) {
             throw new DataAlreadyRegisteredException(name);
         }
+    }
+
+    private Genre verifyIfExistisById(long id) throws RegisterNotFoundException {
+        return genreRepository.findById(id)
+                .orElseThrow(() -> new RegisterNotFoundException(id));
     }
 }
